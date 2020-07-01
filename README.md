@@ -25,8 +25,7 @@ To disable the package without removing it from your project, add this to your `
     "mdg:meteor-apm-agent": {
       "isDisabled": true
     }
-  },
-  ...
+  }
 }
 ``` 
 
