@@ -1,64 +1,56 @@
 var Future = Npm.require('fibers/future');
 
-Tinytest.add(
-  'Subscriptions - Sub/Unsub - subscribe only',
-  function (test) {
-    CleanTestData();
-    EnableTrackingMethods();
-    var client = GetMeteorClient();
+Tinytest.add('Subscriptions - Sub/Unsub - subscribe only', function (test) {
+  CleanTestData();
+  EnableTrackingMethods();
+  var client = GetMeteorClient();
 
-    var h1 = SubscribeAndWait(client, 'tinytest-data');
-    var h2 = SubscribeAndWait(client, 'tinytest-data');
+  var h1 = SubscribeAndWait(client, 'tinytest-data');
+  var h2 = SubscribeAndWait(client, 'tinytest-data');
 
-    var metrics = GetPubSubMetrics();
-    test.equal(metrics.length, 1);
-    test.equal(metrics[0].pubs['tinytest-data'].subs, 2);
-    h1.stop();
-    h2.stop();
-    CloseClient(client);
-  }
-);
+  var metrics = GetPubSubMetrics();
+  test.equal(metrics.length, 1);
+  test.equal(metrics[0].pubs['tinytest-data'].subs, 2);
+  h1.stop();
+  h2.stop();
+  CloseClient(client);
+});
 
+Tinytest.add('Subscriptions - Sub/Unsub - subscribe and unsubscribe', function (
+  test
+) {
+  CleanTestData();
+  EnableTrackingMethods();
+  var client = GetMeteorClient();
 
-Tinytest.add(
-  'Subscriptions - Sub/Unsub - subscribe and unsubscribe',
-  function (test) {
-    CleanTestData();
-    EnableTrackingMethods();
-    var client = GetMeteorClient();
+  var h1 = SubscribeAndWait(client, 'tinytest-data');
+  var h2 = SubscribeAndWait(client, 'tinytest-data');
+  h1.stop();
+  h2.stop();
+  Wait(100);
 
-    var h1 = SubscribeAndWait(client, 'tinytest-data');
-    var h2 = SubscribeAndWait(client, 'tinytest-data');
-    h1.stop();
-    h2.stop();
-    Wait(100);
+  var metrics = GetPubSubMetrics();
+  test.equal(metrics.length, 1);
+  test.equal(metrics[0].pubs['tinytest-data'].subs, 2);
+  test.equal(metrics[0].pubs['tinytest-data'].unsubs, 2);
+  CloseClient(client);
+});
 
-    var metrics = GetPubSubMetrics();
-    test.equal(metrics.length, 1);
-    test.equal(metrics[0].pubs['tinytest-data'].subs, 2);
-    test.equal(metrics[0].pubs['tinytest-data'].unsubs, 2);
-    CloseClient(client);
-  }
-);
-
-Tinytest.add(
-  'Subscriptions - Response Time - single',
-  function (test) {
-    CleanTestData();
-    var client = GetMeteorClient();
-    var Future = Npm.require('fibers/future');
-    var pubName = "pub-" + Random.id();
-    Meteor.publish(pubName, function() {
-      Wait(200);
-      this.ready();
-    });
-    var h1 = SubscribeAndWait(client, pubName);
-    var metrics = FindMetricsForPub(pubName);
-    test.isTrue(CompareNear(metrics.resTime, 200, 100));
-    h1.stop();
-    CloseClient(client);
-  }
-);
+Tinytest.add('Subscriptions - Response Time - single', function (test) {
+  CleanTestData();
+  var client = GetMeteorClient();
+  var Future = Npm.require('fibers/future');
+  var pubName = 'pub-' + Random.id();
+  Meteor.publish(pubName, function () {
+    Wait(200);
+    this.ready();
+  });
+  var h1 = SubscribeAndWait(client, pubName);
+  var metrics = FindMetricsForPub(pubName);
+  test.isTrue(CompareNear(metrics.resTime, 200, 100));
+  h1.stop();
+  CloseClient(client);
+});
 
 // Tinytest.add(
 //   'Subscriptions - Response Time - multiple',
@@ -89,23 +81,20 @@ Tinytest.add(
 //   }
 // );
 
-Tinytest.add(
-  'Subscriptions - Lifetime - sub',
-  function (test) {
-    CleanTestData();
-    EnableTrackingMethods();
-    var client = GetMeteorClient();
-    var Future = Npm.require('fibers/future');
-    var f = new Future();
-    var h1 = SubscribeAndWait(client, 'tinytest-data');
-    Wait(100);
-    h1.stop();
-    Wait(200);
-    var metrics = FindMetricsForPub('tinytest-data');
-    test.isTrue(CompareNear(metrics.lifeTime, 100));
-    CloseClient(client);
-  }
-);
+Tinytest.add('Subscriptions - Lifetime - sub', function (test) {
+  CleanTestData();
+  EnableTrackingMethods();
+  var client = GetMeteorClient();
+  var Future = Npm.require('fibers/future');
+  var f = new Future();
+  var h1 = SubscribeAndWait(client, 'tinytest-data');
+  Wait(100);
+  h1.stop();
+  Wait(200);
+  var metrics = FindMetricsForPub('tinytest-data');
+  test.isTrue(CompareNear(metrics.lifeTime, 100));
+  CloseClient(client);
+});
 
 // // Tinytest.add(
 // //   'Subscriptions - Lifetime - null sub',
@@ -130,72 +119,62 @@ Tinytest.add(
 // //   }
 // // );
 
-Tinytest.add(
-  'Subscriptions - ObserverLifetime - sub',
-  function (test) {
-    CleanTestData();
-    EnableTrackingMethods();
-    var client = GetMeteorClient();
-    var Future = Npm.require('fibers/future');
-    var f = new Future();
-    var h1 = SubscribeAndWait(client, 'tinytest-data');
-    Wait(100);
-    h1.stop();
-    Wait(100);
-    var metrics = FindMetricsForPub('tinytest-data');
+Tinytest.add('Subscriptions - ObserverLifetime - sub', function (test) {
+  CleanTestData();
+  EnableTrackingMethods();
+  var client = GetMeteorClient();
+  var Future = Npm.require('fibers/future');
+  var f = new Future();
+  var h1 = SubscribeAndWait(client, 'tinytest-data');
+  Wait(100);
+  h1.stop();
+  Wait(100);
+  var metrics = FindMetricsForPub('tinytest-data');
 
-    test.isTrue(CompareNear(metrics.observerLifetime, 100));
-    CloseClient(client);
-  }
-);
+  test.isTrue(CompareNear(metrics.observerLifetime, 100));
+  CloseClient(client);
+});
 
+Tinytest.add('Subscriptions - active subs', function (test) {
+  CleanTestData();
+  EnableTrackingMethods();
+  var client = GetMeteorClient();
+  var Future = Npm.require('fibers/future');
+  var f = new Future();
+  var h1 = SubscribeAndWait(client, 'tinytest-data');
+  var h2 = SubscribeAndWait(client, 'tinytest-data');
+  var h3 = SubscribeAndWait(client, 'tinytest-data-2');
 
-Tinytest.add(
-  'Subscriptions - active subs',
-  function (test) {
-    CleanTestData();
-    EnableTrackingMethods();
-    var client = GetMeteorClient();
-    var Future = Npm.require('fibers/future');
-    var f = new Future();
-    var h1 = SubscribeAndWait(client, 'tinytest-data');
-    var h2 = SubscribeAndWait(client, 'tinytest-data');
-    var h3 = SubscribeAndWait(client, 'tinytest-data-2');
+  var payload = GetPubSubPayload();
+  test.equal(payload[0].pubs['tinytest-data'].activeSubs == 2, true);
+  test.equal(payload[0].pubs['tinytest-data-2'].activeSubs == 1, true);
+  h1.stop();
+  h2.stop();
+  h3.stop();
+  CloseClient(client);
+});
 
-    var payload = GetPubSubPayload();
-    test.equal(payload[0].pubs['tinytest-data'].activeSubs == 2, true);
-    test.equal(payload[0].pubs['tinytest-data-2'].activeSubs == 1, true);
-    h1.stop();
-    h2.stop();
-    h3.stop();
-    CloseClient(client);
-  }
-);
+Tinytest.add('Subscriptions - avoiding multiple ready', function (test) {
+  CleanTestData();
+  EnableTrackingMethods();
+  ReadyCounts = 0;
+  var pubId = RegisterPublication(function () {
+    this.ready();
+    this.ready();
+  });
+  var original = Kadira.models.pubsub._trackReady;
+  Kadira.models.pubsub._trackReady = function (session, sub) {
+    if (sub._name == pubId) {
+      ReadyCounts++;
+    }
+  };
+  var client = GetMeteorClient();
+  var h1 = SubscribeAndWait(client, pubId);
 
-Tinytest.add(
-  'Subscriptions - avoiding multiple ready',
-  function (test) {
-    CleanTestData();
-    EnableTrackingMethods();
-    ReadyCounts = 0;
-    var pubId = RegisterPublication(function () {
-      this.ready();
-      this.ready();
-    });
-    var original = Kadira.models.pubsub._trackReady;
-    Kadira.models.pubsub._trackReady = function(session, sub) {
-      if(sub._name == pubId) {
-        ReadyCounts++;
-      }
-    };
-    var client = GetMeteorClient();
-    var h1 = SubscribeAndWait(client, pubId);
-
-    test.equal(ReadyCounts, 1);
-    Kadira.models.pubsub._trackReady = original;
-    CloseClient(client);
-  }
-);
+  test.equal(ReadyCounts, 1);
+  Kadira.models.pubsub._trackReady = original;
+  CloseClient(client);
+});
 
 Tinytest.add(
   'Subscriptions - Observer Cache - single publication and single subscription',

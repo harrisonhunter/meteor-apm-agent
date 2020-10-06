@@ -1,4 +1,3 @@
-
 Tinytest.add(
   'Client Side - Error Manager - Reporters - meteor._debug - with zone',
   TestWithErrorTracking(function (test) {
@@ -15,7 +14,7 @@ Tinytest.add(
     test.equal(errorSent, false);
     restoreKadiraSendErrors();
 
-    // cleajr 
+    // cleajr
     window.zone = originalZone;
     function mock_KadiraSendErrors(data) {
       errorSent = true;
@@ -35,7 +34,7 @@ Tinytest.add(
 
     try {
       Meteor._debug(message, '_stack');
-    } catch(e) {};
+    } catch (e) {}
 
     window.zone = originalZone;
     test.equal(errorSent, true);
@@ -68,7 +67,7 @@ Tinytest.add(
       var err = new Error(message);
       err.stack = '_stack';
       Meteor._debug(err);
-    } catch(e) {};
+    } catch (e) {}
 
     window.zone = originalZone;
     test.equal(errorSent, true);
@@ -100,7 +99,7 @@ function restoreKadiraSendErrors() {
   Kadira.errors.sendError = original_KadiraSendErrors;
 }
 
-function TestWithErrorTracking (testFunction) {
+function TestWithErrorTracking(testFunction) {
   return function (test) {
     var status = Kadira.options.enableErrorTracking;
     var appId = Kadira.options.appId;
@@ -109,5 +108,5 @@ function TestWithErrorTracking (testFunction) {
     testFunction(test);
     Kadira.options.appId = appId;
     status ? Kadira.enableErrorTracking() : Kadira.disableErrorTracking();
-  }
+  };
 }

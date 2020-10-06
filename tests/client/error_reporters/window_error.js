@@ -1,4 +1,3 @@
-
 Tinytest.addAsync(
   'Client Side - Error Manager - Reporters - window.onerror - with all args',
   TestWithErrorTrackingAsync(function (test, next) {
@@ -49,7 +48,7 @@ Tinytest.addAsync(
 var original_KadiraSendErrors;
 
 function hijackKadiraSendErrors(mock) {
-  original_KadiraSendErrors = Kadira.errors.sendError
+  original_KadiraSendErrors = Kadira.errors.sendError;
   Kadira.errors.sendError = mock;
 }
 
@@ -57,7 +56,7 @@ function restoreKadiraSendErrors() {
   Kadira.errors.sendError = original_KadiraSendErrors;
 }
 
-function TestWithErrorTrackingAsync (testFunction) {
+function TestWithErrorTrackingAsync(testFunction) {
   return function (test, next) {
     var status = Kadira.options.enableErrorTracking;
     var appId = Kadira.options.appId;
@@ -68,5 +67,5 @@ function TestWithErrorTrackingAsync (testFunction) {
       status ? Kadira.enableErrorTracking() : Kadira.disableErrorTracking();
       next();
     });
-  }
+  };
 }

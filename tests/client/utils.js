@@ -1,32 +1,36 @@
-
-Tinytest.addAsync(
-  'Client Side - Settings - publication',
-  function (test, done) {
-    var SettingsCollection = new Meteor.Collection('kadira_settings');
-    SettingsCollection.find().observe({added: _.once(function (options) {
+Tinytest.addAsync('Client Side - Settings - publication', function (
+  test,
+  done
+) {
+  var SettingsCollection = new Meteor.Collection('kadira_settings');
+  SettingsCollection.find().observe({
+    added: _.once(function (options) {
       test.equal(!!options.appId, true);
       test.equal(!!options.endpoint, true);
       test.equal(!!options.clientEngineSyncDelay, true);
       done();
-    })});
-  }
-);
+    }),
+  });
+});
 
-Tinytest.add(
-  'Client Side - Error Manager - Utils - getErrorStack()',
-  function (test) {
-    test.equal('function', typeof getErrorStack);
-  }
-);
+Tinytest.add('Client Side - Error Manager - Utils - getErrorStack()', function (
+  test
+) {
+  test.equal('function', typeof getErrorStack);
+});
 
 Tinytest.addAsync(
   'Client Side - Error Manager - Utils - getErrorStack() errored stack',
   function (test, done) {
     var stack = '-- test stack --';
     var zone = {
-      erroredStack: {get: function () {return stack}}
+      erroredStack: {
+        get: function () {
+          return stack;
+        },
+      },
     };
-    getErrorStack(zone, function(trace) {
+    getErrorStack(zone, function (trace) {
       test.equal(1, trace.length);
       test.equal('number', typeof trace[0].at);
       test.equal('string', typeof trace[0].stack);
@@ -44,10 +48,18 @@ Tinytest.addAsync(
       createdAt: 100,
       runAt: 200,
       owner: '_owner',
-      currentStack: {get: function () {return stack}},
-      erroredStack: {get: function () {return stack}},
+      currentStack: {
+        get: function () {
+          return stack;
+        },
+      },
+      erroredStack: {
+        get: function () {
+          return stack;
+        },
+      },
       // eventMap: {}
-      depth: 20
+      depth: 20,
     };
 
     var expected = {
@@ -58,10 +70,10 @@ Tinytest.addAsync(
       ownerArgs: [],
       info: [],
       events: [],
-      zoneId: 'foo'
+      zoneId: 'foo',
     };
 
-    getErrorStack(zone, function(trace) {
+    getErrorStack(zone, function (trace) {
       test.equal(2, trace.length);
       test.equal('number', typeof trace[0].at);
       test.equal(stack, trace[0].stack);
@@ -75,20 +87,30 @@ Tinytest.addAsync(
   'Client Side - Error Manager - Utils - getErrorStack() with stack',
   function (test, done) {
     var stack = '-- test stack --';
-    var eventMap = {foo: [
-      {type: 'owner-args', args: ['foo', 'bar'], at: 300},
-      {type: '_type', args: ['bar', 'baz']},
-    ]};
+    var eventMap = {
+      foo: [
+        { type: 'owner-args', args: ['foo', 'bar'], at: 300 },
+        { type: '_type', args: ['bar', 'baz'] },
+      ],
+    };
 
     var zone = {
       id: 'foo',
       createdAt: 100,
       runAt: 200,
       owner: '_owner',
-      currentStack: {get: function () {return stack}},
-      erroredStack: {get: function () {return stack}},
+      currentStack: {
+        get: function () {
+          return stack;
+        },
+      },
+      erroredStack: {
+        get: function () {
+          return stack;
+        },
+      },
       eventMap: eventMap,
-      depth: 20
+      depth: 20,
     };
 
     var expected = {
@@ -98,11 +120,11 @@ Tinytest.addAsync(
       owner: '_owner',
       ownerArgs: ['foo', 'bar'],
       info: [],
-      events: [{type: '_type', args: ['bar', 'baz']}],
-      zoneId: 'foo'
+      events: [{ type: '_type', args: ['bar', 'baz'] }],
+      zoneId: 'foo',
     };
 
-    getErrorStack(zone, function(trace) {
+    getErrorStack(zone, function (trace) {
       test.equal(2, trace.length);
       test.equal('number', typeof trace[0].at);
       test.equal(stack, trace[0].stack);
@@ -119,13 +141,13 @@ Tinytest.addAsync(
 
     var eventMap = {
       foo: [
-        {type: 'owner-args', args: ['foo', 'bar'], at: 300},
-        {type: '_type', args: ['bar', 'baz']},
+        { type: 'owner-args', args: ['foo', 'bar'], at: 300 },
+        { type: '_type', args: ['bar', 'baz'] },
       ],
       bar: [
-        {type: 'owner-args', args: ['foo2', 'bar2'], at: 310},
-        {type: '_type2', args: ['bar2', 'baz2']},
-      ]
+        { type: 'owner-args', args: ['foo2', 'bar2'], at: 310 },
+        { type: '_type2', args: ['bar2', 'baz2'] },
+      ],
     };
 
     var zone2 = {
@@ -133,9 +155,17 @@ Tinytest.addAsync(
       createdAt: 110,
       runAt: 210,
       owner: '_owner2',
-      currentStack: {get: function () {return stack}},
-      erroredStack: {get: function () {return stack}},
-      depth: 20
+      currentStack: {
+        get: function () {
+          return stack;
+        },
+      },
+      erroredStack: {
+        get: function () {
+          return stack;
+        },
+      },
+      depth: 20,
     };
 
     var zone = {
@@ -144,10 +174,18 @@ Tinytest.addAsync(
       runAt: 200,
       owner: '_owner',
       parent: zone2,
-      currentStack: {get: function () {return stack}},
-      erroredStack: {get: function () {return stack}},
+      currentStack: {
+        get: function () {
+          return stack;
+        },
+      },
+      erroredStack: {
+        get: function () {
+          return stack;
+        },
+      },
       eventMap: eventMap,
-      depth: 20
+      depth: 20,
     };
 
     var expected = {
@@ -157,8 +195,8 @@ Tinytest.addAsync(
       owner: '_owner',
       ownerArgs: ['foo', 'bar'],
       info: [],
-      events: [{type: '_type', args: ['bar', 'baz']}],
-      zoneId: 'foo'
+      events: [{ type: '_type', args: ['bar', 'baz'] }],
+      zoneId: 'foo',
     };
 
     var expected2 = {
@@ -168,11 +206,11 @@ Tinytest.addAsync(
       owner: '_owner2',
       ownerArgs: ['foo2', 'bar2'],
       info: [],
-      events: [{type: '_type2', args: ['bar2', 'baz2']}],
-      zoneId: 'bar'
+      events: [{ type: '_type2', args: ['bar2', 'baz2'] }],
+      zoneId: 'bar',
     };
 
-    getErrorStack(zone, function(trace) {
+    getErrorStack(zone, function (trace) {
       test.equal(3, trace.length);
       test.equal('number', typeof trace[0].at);
       test.equal(stack, trace[0].stack);
@@ -209,35 +247,35 @@ Tinytest.add(
 
 Tinytest.add(
   'Client Side - Error Manager - Utils - checkSizeAndPickFields - filter large fields',
-  function(test) {
+  function (test) {
     var obj = {
-      shortOne: "hello",
-      longOne: {a: "cooliossssss"}
+      shortOne: 'hello',
+      longOne: { a: 'cooliossssss' },
     };
 
     var expected = {
-      shortOne: "hello",
-      longOne: '{"a":"cool ...'
+      shortOne: 'hello',
+      longOne: '{"a":"cool ...',
     };
     var result = checkSizeAndPickFields(10)(obj);
-    test.equal(result, expected)
+    test.equal(result, expected);
   }
 );
 
 Tinytest.add(
   'Client Side - Error Manager - Utils - checkSizeAndPickFields - handling cyclic fields',
-  function(test) {
+  function (test) {
     var obj = {
-      shortOne: "hello",
-      longOne: {same: $('body')}
+      shortOne: 'hello',
+      longOne: { same: $('body') },
     };
 
     var expected = {
-      shortOne: "hello",
-      longOne: "Error: cannot stringify value"
+      shortOne: 'hello',
+      longOne: 'Error: cannot stringify value',
     };
     var result = checkSizeAndPickFields(10)(obj);
-    test.equal(result, expected)
+    test.equal(result, expected);
   }
 );
 
