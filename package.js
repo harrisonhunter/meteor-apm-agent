@@ -1,6 +1,6 @@
 Package.describe({
   "summary": "Performance Monitoring for Meteor",
-  "version": "3.1.1",
+  "version": "3.3.0",
   "git": "https://github.com/meteor/meteor-apm-agent.git",
   "name": "mdg:meteor-apm-agent"
 });
@@ -10,9 +10,9 @@ var npmModules = {
   "kadira-core": "1.3.2",
   "pidusage": "1.0.1",
   "evloop-monitor": "0.1.0",
-  "pidusage": "0.1.1",
   "lru-cache": "4.0.0",
-  "json-stringify-safe": "5.0.1"
+  "json-stringify-safe": "5.0.1",
+  "uuid": "3.3.2"
 };
 
 Npm.depends(npmModules);
@@ -85,16 +85,25 @@ Package.on_test(function(api) {
 });
 
 function configurePackage(api) {
-  if(api.versionsFrom) {
-    api.versionsFrom('METEOR@1.2');
-    api.use('meteorhacks:meteorx@1.4.1', ['server']);
+  if (api.versionsFrom) {
+    api.versionsFrom('METEOR@1.11');
     api.use('meteorhacks:zones@1.2.1', {weak: true});
   }
 
   api.use([
-    'minimongo', 'livedata', 'mongo-livedata', 'ejson', 'ddp-common',
-    'underscore', 'http', 'email', 'random'
+    'ecmascript',
+    'mongo',
+    'minimongo',
+    'livedata',
+    'mongo-livedata',
+    'ejson',
+    'ddp-common',
+    'underscore',
+    'http',
+    'email',
+    'random',
   ], ['server']);
+
   api.use(['underscore', 'random', 'http', 'localstorage'], ['client']);
 
   // common before

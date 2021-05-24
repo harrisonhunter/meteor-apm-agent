@@ -15,6 +15,20 @@ Now your app will send information to Meteor APM. Visit [Galaxy](https://galaxy.
 
 Wait up to one minute and then data should begin appearing.
 
+### Disabling metrics
+
+To disable the package without removing it from your project, add this to your `settings.json`:
+
+```json
+{
+  "packages": {
+    "mdg:meteor-apm-agent": {
+      "isDisabled": true
+    }
+  }
+}
+``` 
+
 ### More information
 
 Check out the [Meteor APM Guide](http://galaxy-guide.meteor.com/apm-getting-started.html) for more information and improve your app with Meteor APM.
